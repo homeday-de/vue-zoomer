@@ -5,7 +5,8 @@
       'anim': autoSliding && !isPointerDown,
     }"
     :style="{
-      'background-color': backgroundColor,
+      backgroundColor,
+      overflow: overflowHidden ? 'hidden' : 'visible',
     }"
     class="vue-zoomer-gallery"
     @mousemove="onMouseMove"
@@ -29,12 +30,13 @@
       :aspect-ratio="imageAspectRatios[selIndex + i - 1] || 1"
       :pivot="pivot"
       :limit-translation="limitTranslation"
+      :overflow-hidden="overflowHidden"
       @swipe="onImageSwipe"
     >
       <img
         v-if="selIndex + i - 1 > -1 && selIndex + i - 1 < list.length"
         :src="list[selIndex + i - 1]"
-        style="object-fit: contain; width: 100%; height: 100%;"
+        class="vue-zoomer-gallery__image"
         @load="onImageLoad(selIndex + i - 1, $event)"
       >
     </v-zoomer>
@@ -52,6 +54,7 @@ export default {
     backgroundColor: { type: String, default: '#333' },
     pivot: { type: String, default: 'cursor' },
     limitTranslation: { type: Boolean, default: true },
+    overflowHidden: { type: Boolean, default: true },
   },
   data () {
     return {
@@ -203,7 +206,6 @@ export default {
 <style scoped>
 .vue-zoomer-gallery {
   position: relative;
-  overflow: hidden;
   user-select: none;
   min-width: 100px;
   min-height: 100px;
@@ -214,12 +216,16 @@ export default {
 .vue-zoomer-gallery.anim .slide {
   transition: left 0.4s;
 }
+.vue-zoomer-gallery__image {
+  max-width: 100%;
+  max-height: 100%;
+}
 .slide {
   position: absolute;
   top: 0;
-  object-fit: contain;
   width: 100%;
   height: 100%;
+  text-align: center;
   -webkit-user-drag: none;
 }
 </style>

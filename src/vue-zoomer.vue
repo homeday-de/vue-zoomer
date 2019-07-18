@@ -3,7 +3,10 @@
   <!-- mousewheel.prevent is used to stop the page scroll elastic effects -->
   <div
     class="vue-zoomer"
-    :style="{backgroundColor: backgroundColor}"
+    :style="{
+      backgroundColor,
+      overflow: overflowHidden ? 'hidden' : 'visible',
+    }"
     @mousewheel.prevent="onMouseWheel"
     @mousedown="onMouseDown"
     @mouseup="onMouseUp"
@@ -33,6 +36,7 @@ export default {
     backgroundColor: { type: String, default: 'transparent' },
     pivot: { type: String, default: 'cursor' }, // other options: image-center
     limitTranslation: { type: Boolean, default: true },
+    overflowHidden: { type: Boolean, default: true },
   },
   data () {
     return {
@@ -339,7 +343,6 @@ export default {
 
 <style scoped>
 .vue-zoomer {
-  overflow: hidden;
   transition: background-color 0.5s;
 }
 

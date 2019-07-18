@@ -53,6 +53,7 @@ Gallery usage:
 - `zoomed: out boolean` - Whether zoomed in (scale equals to 1);
 - `pivot: 'cursor' | 'image-center'` - The pivot when zoom the content, default is `cursor`, can set to be `image-center`;
 - `limitTranslation: boolean` - Whether to limit the content into the container, default is true;
+- `overflowHidden: boolean` - Whether to hide the zoomed item from being shown outside its container, default is true;
 
 ## &lt;v-zoomer-gallery&gt; Props
 
@@ -60,6 +61,7 @@ Gallery usage:
 - `v-model(value): number required` - Index of current showing image;
 - `pivot: 'cursor' | 'image-center'` - The pivot when zoom the image, default is `cursor`, can set to be `image-center`;
 - `limitTranslation: boolean` - Whether to limit the image into the container, default is true;
+- `overflowHidden: boolean` - Whether to hide the zoomed item from being shown outside its container, default is true;
 
 # License
 
