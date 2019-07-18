@@ -217,6 +217,9 @@ export default {
   transition: left 0.4s;
 }
 .vue-zoomer-gallery__image {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
   max-width: 100%;
   max-height: 100%;
 }
