@@ -337,19 +337,20 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
-.vue-zoomer
-  // position relative
-  overflow hidden
-  transition background-color 0.5s
+<style scoped>
+.vue-zoomer {
+  overflow: hidden;
+  transition: background-color 0.5s;
+}
 
-.zoomer
-  // position absolute
-  transform-origin 50% 50%
-  width 100%
-  height 100%
-  & > img
-    // remove the 4px gap below the image
-    vertical-align top
-    -webkit-user-drag none
+.zoomer {
+  transform-origin: 50% 50%;
+  width: 100%;
+  height: 100%;
+}
+
+.zoomer > img {
+  vertical-align: top;
+  -webkit-user-drag: none;
+}
 </style>
