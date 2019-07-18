@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import _debounce from 'lodash.debounce'
+import _debounce from 'lodash/debounce'
 
 import TapDetector from './TapDetector'
 
