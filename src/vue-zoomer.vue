@@ -27,6 +27,7 @@ import _debounce from 'lodash/debounce'
 import TapDetector from './TapDetector'
 
 export default {
+  name: 'VZoomer',
   props: {
     minScale: { type: Number, default: 1 },
     maxScale: { type: Number, default: 5 },

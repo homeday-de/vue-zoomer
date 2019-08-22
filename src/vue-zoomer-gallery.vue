@@ -44,10 +44,15 @@
 </template>
 
 <script>
+import VZoomer from './vue-zoomer.vue';
 
 const SLIDE_WIDTH_THRESH = 50 // in px
 
 export default {
+  name: 'VZoomerGallery',
+  components: {
+    VZoomer,
+  },
   props: {
     value: { type: Number, required: true },
     list: { type: Array, required: true },
