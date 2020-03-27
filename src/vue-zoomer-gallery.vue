@@ -33,12 +33,19 @@
       :overflow-hidden="overflowHidden"
       @swipe="onImageSwipe"
     >
-      <img
+      <picture
         v-if="selIndex + i - 1 > -1 && selIndex + i - 1 < list.length"
-        :src="list[selIndex + i - 1]"
-        class="vue-zoomer-gallery__image"
         @load="onImageLoad(selIndex + i - 1, $event)"
       >
+        <source v-for="(source, media) in list[selIndex + i - 1].pictureSources"
+          :key="media"
+          :media="`(${media})`" :srcset="source"
+        >
+        <img class="vue-zoomer-gallery__image"
+          :src="list[selIndex + i - 1].image ? list[selIndex + i - 1].image : list[selIndex + i - 1]"
+          :alt="list[selIndex + i - 1].caption ? list[selIndex + i - 1].caption : false"
+        >
+      </picture>
     </v-zoomer>
   </div>
 </template>
@@ -46,7 +53,7 @@
 <script>
 import VZoomer from './vue-zoomer.vue';
 
-const SLIDE_WIDTH_THRESH = 50 // in px
+const SLIDE_WIDTH_THRESH = 50; // in px
 
 export default {
   name: 'VZoomerGallery',
@@ -61,7 +68,7 @@ export default {
     limitTranslation: { type: Boolean, default: true },
     overflowHidden: { type: Boolean, default: true },
   },
-  data () {
+  data() {
     return {
       // env states
       containerWidth: 1,
@@ -76,136 +83,136 @@ export default {
       isPointerDown: false,
       lastPointerX: 0,
       slideOffsetX: 0,
-    }
+    };
   },
   computed: {
-    middleStyle () {
+    middleStyle() {
       return {
-        left: `${ 0 + this.slideOffsetX }px`,
-      }
+        left: `${0 + this.slideOffsetX}px`,
+      };
     },
-    leftStyle () {
+    leftStyle() {
       return {
-        left: `${ -this.containerWidth + this.slideOffsetX }px`,
-      }
+        left: `${-this.containerWidth + this.slideOffsetX}px`,
+      };
     },
-    rightStyle () {
+    rightStyle() {
       return {
-        left: `${ this.containerWidth + this.slideOffsetX }px`,
-      }
+        left: `${this.containerWidth + this.slideOffsetX}px`,
+      };
     },
-    slideThresh () {
-      return Math.max(SLIDE_WIDTH_THRESH, this.containerWidth * 0.1)
+    slideThresh() {
+      return Math.max(SLIDE_WIDTH_THRESH, this.containerWidth * 0.1);
     },
   },
   watch: {
-    value (val) {
+    value(val) {
       if (val !== this.animSelIndex) {
-        this.selIndex = val
-        this.animSelIndex = val
+        this.selIndex = val;
+        this.animSelIndex = val;
       }
     },
   },
-  mounted () {
-    window.addEventListener('resize', this.onWindowResize)
-    this.onWindowResize()
+  mounted() {
+    window.addEventListener('resize', this.onWindowResize);
+    this.onWindowResize();
   },
-  destroyed () {
-    window.removeEventListener('resize', this.onWindowResize)
+  destroyed() {
+    window.removeEventListener('resize', this.onWindowResize);
   },
   methods: {
     // api
-    reset () {
-      this.$refs.zoomers.forEach(zoomer => {
-        zoomer.reset()
-      })
+    reset() {
+      this.$refs.zoomers.forEach((zoomer) => {
+        zoomer.reset();
+      });
     },
     // reactive
-    onWindowResize () {
-      let styles = window.getComputedStyle(this.$el)
-      this.containerWidth = parseFloat(styles.width)
-      this.containerHeight = parseFloat(styles.height)
+    onWindowResize() {
+      const styles = window.getComputedStyle(this.$el);
+      this.containerWidth = parseFloat(styles.width);
+      this.containerHeight = parseFloat(styles.height);
     },
-    onPointerMove (deltaX) {
+    onPointerMove(deltaX) {
       if (this.isPointerDown && !this.currentZoomed) {
-        let factor = (
-          (this.selIndex === 0 && deltaX > 0 && this.slideOffsetX + deltaX > 0) ||
-          (this.selIndex === this.list.length - 1 && deltaX < 0 && this.slideOffsetX + deltaX < 0)
-        ) ? 0.3 : 1
-        this.slideOffsetX += deltaX * factor
+        const factor = (
+          (this.selIndex === 0 && deltaX > 0 && this.slideOffsetX + deltaX > 0)
+          || (this.selIndex === this.list.length - 1 && deltaX < 0 && this.slideOffsetX + deltaX < 0)
+        ) ? 0.3 : 1;
+        this.slideOffsetX += deltaX * factor;
       }
     },
-    onPointerUp () {
+    onPointerUp() {
       if (this.slideOffsetX < -this.slideThresh) {
         // next page
-        this.paginate(1)
+        this.paginate(1);
       } else if (this.slideOffsetX > this.slideThresh) {
         // prev page
-        this.paginate(-1)
+        this.paginate(-1);
       } else {
         // only apply the animation
-        this.paginate(0)
+        this.paginate(0);
       }
     },
-    paginate (deltaIndex) {
-      let targetIndex = this.selIndex + deltaIndex
+    paginate(deltaIndex) {
+      const targetIndex = this.selIndex + deltaIndex;
       if (targetIndex < 0 || targetIndex >= this.list.length) {
-        this.slideOffsetX = 0
-        return
+        this.slideOffsetX = 0;
+        return;
       }
 
-      this.slideOffsetX = this.containerWidth * -deltaIndex
-      this.autoSliding = true
+      this.slideOffsetX = this.containerWidth * -deltaIndex;
+      this.autoSliding = true;
       // update the selIndex before the animation to remove the delay feeling
-      this.$emit('input', targetIndex)
-      this.animSelIndex = targetIndex
+      this.$emit('input', targetIndex);
+      this.animSelIndex = targetIndex;
       setTimeout(() => {
-        this.selIndex = targetIndex
-        this.slideOffsetX = 0
-        this.autoSliding = false
-      }, 400)
+        this.selIndex = targetIndex;
+        this.slideOffsetX = 0;
+        this.autoSliding = false;
+      }, 400);
     },
-    onMouseDown (ev) {
-      this.isPointerDown = true
-      this.lastPointerX = ev.clientX
+    onMouseDown(ev) {
+      this.isPointerDown = true;
+      this.lastPointerX = ev.clientX;
     },
-    onMouseUp (ev) {
-      this.isPointerDown = false
-      this.onPointerUp()
+    onMouseUp(ev) {
+      this.isPointerDown = false;
+      this.onPointerUp();
     },
-    onMouseMove (ev) {
+    onMouseMove(ev) {
       if (this.isPointerDown) {
-        this.onPointerMove(ev.clientX - this.lastPointerX)
-        this.lastPointerX = ev.clientX
+        this.onPointerMove(ev.clientX - this.lastPointerX);
+        this.lastPointerX = ev.clientX;
       }
     },
-    onTouchStart (ev) {
+    onTouchStart(ev) {
       if (ev.touches.length === 1) {
-        this.isPointerDown = true
-        this.lastPointerX = ev.touches[0].clientX
+        this.isPointerDown = true;
+        this.lastPointerX = ev.touches[0].clientX;
       }
     },
-    onTouchEnd (ev) {
+    onTouchEnd(ev) {
       if (ev.touches.length === 0) {
-        this.isPointerDown = false
-        this.onPointerUp()
+        this.isPointerDown = false;
+        this.onPointerUp();
       }
     },
-    onTouchMove (ev) {
+    onTouchMove(ev) {
       if (ev.touches.length === 1) {
-        this.onPointerMove(ev.touches[0].clientX - this.lastPointerX)
-        this.lastPointerX = ev.touches[0].clientX
+        this.onPointerMove(ev.touches[0].clientX - this.lastPointerX);
+        this.lastPointerX = ev.touches[0].clientX;
       }
     },
-    onImageLoad (index, ev) {
-      let aspectRatio = ev.target.naturalWidth / ev.target.naturalHeight
-      this.$set(this.imageAspectRatios, index, aspectRatio)
+    onImageLoad(index, ev) {
+      const aspectRatio = ev.target.naturalWidth / ev.target.naturalHeight;
+      this.$set(this.imageAspectRatios, index, aspectRatio);
     },
-    onImageSwipe (direction) {
-      this.paginate(direction == 'right' ? -1 : 1)
+    onImageSwipe(direction) {
+      this.paginate(direction == 'right' ? -1 : 1);
     },
   },
-}
+};
 </script>
 
 <style scoped>
