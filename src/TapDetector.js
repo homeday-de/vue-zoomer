@@ -11,50 +11,49 @@
  * tapDetector.onDouble(callback)
  */
 
-function TapDetector () {
-
+function TapDetector() {
   // Callbacks -----------------------------------------------------------------
 
-  let singleTapCallbacks = [];
-  let doubleTapCallbacks = [];
+  const singleTapCallbacks = [];
+  const doubleTapCallbacks = [];
 
-  function triggerCallbacks (cbList, arg) {
-    cbList.forEach(cbItem => {
+  function triggerCallbacks(cbList, arg) {
+    cbList.forEach((cbItem) => {
       cbItem.call(null, arg);
     });
   }
 
   this.onSingleTap = function (cb) {
-    if (typeof cb === "function" && !singleTapCallbacks.includes(cb)) {
+    if (typeof cb === 'function' && !singleTapCallbacks.includes(cb)) {
       singleTapCallbacks.push(cb);
     }
   };
   this.onDoubleTap = function (cb) {
-    if (typeof cb === "function" && !doubleTapCallbacks.includes(cb)) {
+    if (typeof cb === 'function' && !doubleTapCallbacks.includes(cb)) {
       doubleTapCallbacks.push(cb);
     }
   };
 
   this.attach = function (dom) {
     if (!(dom instanceof Element)) {
-      console.error("TapDetector.attach: arg must be an Element");
+      console.error('TapDetector.attach: arg must be an Element');
       return;
     }
-    dom.addEventListener("touchstart", onTouchStart);
-    dom.addEventListener("touchmove", onTouchMove);
-    dom.addEventListener("touchend", onTouchEnd);
-    dom.addEventListener("mousedown", onMouseDown);
-    dom.addEventListener("mouseup", onMouseUp);
-    dom.addEventListener("mousemove", onMouseMove);
+    dom.addEventListener('touchstart', onTouchStart);
+    dom.addEventListener('touchmove', onTouchMove);
+    dom.addEventListener('touchend', onTouchEnd);
+    dom.addEventListener('mousedown', onMouseDown);
+    dom.addEventListener('mouseup', onMouseUp);
+    dom.addEventListener('mousemove', onMouseMove);
   };
 
   this.detach = function (dom) {
-    dom.removeEventListener("touchstart", onTouchStart);
-    dom.removeEventListener("touchmove", onTouchMove);
-    dom.removeEventListener("touchend", onTouchEnd);
-    dom.removeEventListener("mousedown", onMouseDown);
-    dom.removeEventListener("mouseup", onMouseUp);
-    dom.removeEventListener("mousemove", onMouseMove);
+    dom.removeEventListener('touchstart', onTouchStart);
+    dom.removeEventListener('touchmove', onTouchMove);
+    dom.removeEventListener('touchend', onTouchEnd);
+    dom.removeEventListener('mousedown', onMouseDown);
+    dom.removeEventListener('mouseup', onMouseUp);
+    dom.removeEventListener('mousemove', onMouseMove);
   };
 
   // Main logic ----------------------------------------------------------------
@@ -68,39 +67,39 @@ function TapDetector () {
   let lastPointerX = 0;
   let lastPointerY = 0;
 
-  function onTouchStart (ev) {
+  function onTouchStart(ev) {
     isTouchMode = true;
     // console.log('onTouchStart')
     if (ev.touches.length === 1) {
       onPointerDown(ev.touches[0].clientX, ev.touches[0].clientY);
     }
   }
-  function onTouchEnd (ev) {
+  function onTouchEnd(ev) {
     // console.log('onTouchEnd')
     if (ev.touches.length === 0) {
       onPointerUp();
     }
   }
-  function onTouchMove (ev) {
+  function onTouchMove(ev) {
     // console.log('onTouchMove', ev)
     if (ev.touches.length === 1) {
       onPointerMove(ev.touches[0].clientX, ev.touches[0].clientY);
     }
   }
 
-  function onMouseDown (ev) {
+  function onMouseDown(ev) {
     if (isTouchMode) return;
 
     // console.log('onMouseDown')
     onPointerDown(ev.clientX, ev.clientY);
   }
-  function onMouseUp (ev) {
+  function onMouseUp(ev) {
     if (isTouchMode) return;
 
     // console.log('onMouseUp')
     onPointerUp();
   }
-  function onMouseMove (ev) {
+  function onMouseMove(ev) {
     if (isTouchMode) return;
 
     // console.log('onMouseMove', ev)
@@ -109,13 +108,13 @@ function TapDetector () {
     }
   }
 
-  function onPointerDown (x, y) {
+  function onPointerDown(x, y) {
     lastPointerX = x;
     lastPointerY = y;
     touchMovedLength = 0;
   }
-  function onPointerUp () {
-    let currTimeStamp = Date.now();
+  function onPointerUp() {
+    const currTimeStamp = Date.now();
     // console.log('touchMovedLength', touchMovedLength)
     if (touchMovedLength < 10) {
       // Only when no sliding two far is considered as a valid tap
@@ -140,10 +139,10 @@ function TapDetector () {
     }
     touchMovedLength = 0;
   }
-  function onPointerMove (x, y) {
-    let deltaX = lastPointerX - x;
-    let deltaY = lastPointerY - y;
-    let length = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+  function onPointerMove(x, y) {
+    const deltaX = lastPointerX - x;
+    const deltaY = lastPointerY - y;
+    const length = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
     // console.log('onTouchMove length', length)
     touchMovedLength += length;
     lastPointerX = x;
