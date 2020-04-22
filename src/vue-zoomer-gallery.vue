@@ -43,7 +43,7 @@
         >
         <img class="vue-zoomer-gallery__image"
           :src="list[selIndex + i - 1].image ? list[selIndex + i - 1].image : list[selIndex + i - 1]"
-          :alt="list[selIndex + i - 1].caption ? list[selIndex + i - 1] : false"
+          :alt="list[selIndex + i - 1].caption ? list[selIndex + i - 1].caption : false"
         >
       </picture>
     </v-zoomer>
